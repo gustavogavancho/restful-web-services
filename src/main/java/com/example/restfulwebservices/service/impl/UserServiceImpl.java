@@ -7,6 +7,7 @@ import com.example.restfulwebservices.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @Service
@@ -26,8 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Integer id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(MessageFormat.format("User with id: {0} not found!", id)));
     }
+
 
     @Override
     public User add(User user) {
