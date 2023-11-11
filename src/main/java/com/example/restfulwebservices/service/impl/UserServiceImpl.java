@@ -1,7 +1,6 @@
 package com.example.restfulwebservices.service.impl;
 
 import com.example.restfulwebservices.exception.NotFoundException;
-import com.example.restfulwebservices.model.User;
 import com.example.restfulwebservices.repository.UserRepository;
 import com.example.restfulwebservices.service.UserService;
 import com.example.restfulwebservices.service.dto.UserDto;

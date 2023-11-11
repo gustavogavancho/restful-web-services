@@ -1,5 +1,6 @@
 package com.example.restfulwebservices.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +35,10 @@ public class User {
     @NotNull(message = "Date should not be null")
     @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Post> posts;
 
     @Override
     public String toString() {

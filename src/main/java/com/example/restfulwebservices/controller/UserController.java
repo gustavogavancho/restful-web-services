@@ -1,7 +1,7 @@
 package com.example.restfulwebservices.controller;
 
-import com.example.restfulwebservices.model.User;
 import com.example.restfulwebservices.service.UserService;
+import com.example.restfulwebservices.service.dto.PostDto;
 import com.example.restfulwebservices.service.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,6 @@ public class UserController {
         return userService.findAll();
     }
 
-    //Hateoas
     @GetMapping("/users/{id}")
     public EntityModel<UserDto> getUser(@PathVariable(name = "id") Integer id){
         var user = userService.findById(id);
@@ -57,4 +56,13 @@ public class UserController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @GetMapping("/users/{id}/posts")
+    public List<PostDto> getPostForUser(@PathVariable(name = "id") Integer id){
+        var user = userService.findById(id);
+
+        return user.posts();
+    }
+
+
 }
