@@ -29,6 +29,7 @@ public class UserController {
         return userService.findAll();
     }
 
+    //Hateoas
     @GetMapping("/users/{id}")
     public EntityModel<User> getUser(@PathVariable(name = "id") Integer id){
         User user = userService.findById(id);
