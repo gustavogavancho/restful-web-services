@@ -2,6 +2,7 @@ package com.example.restfulwebservices.controller;
 
 import com.example.restfulwebservices.model.User;
 import com.example.restfulwebservices.service.UserService;
+import com.example.restfulwebservices.service.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -25,15 +26,15 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getUsers(){
+    public List<UserDto> getUsers(){
         return userService.findAll();
     }
 
     //Hateoas
     @GetMapping("/users/{id}")
-    public EntityModel<User> getUser(@PathVariable(name = "id") Integer id){
-        User user = userService.findById(id);
-        EntityModel<User> entityModel = EntityModel.of(user);
+    public EntityModel<UserDto> getUser(@PathVariable(name = "id") Integer id){
+        var user = userService.findById(id);
+        EntityModel<UserDto> entityModel = EntityModel.of(user);
         WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).getUsers());
         entityModel.add(link.withRel("all-users"));
 
@@ -46,12 +47,12 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
-        User userAdded = userService.add(user);
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto user){
+        var userAdded = userService.add(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(userAdded.getId())
+                .buildAndExpand(userAdded.id())
                 .toUri();
 
         return ResponseEntity.created(location).build();
