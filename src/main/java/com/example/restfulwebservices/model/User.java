@@ -37,7 +37,6 @@ public class User {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<Post> posts;
 
     @Override

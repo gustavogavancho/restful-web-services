@@ -1,3 +1,14 @@
 package com.example.restfulwebservices.service.dto;
 
-public record PostDto(Integer id, String description) {}
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class PostDto {
+    private Integer id;
+    private String description;
+    @JsonIgnore
+    private UserDto user;
+}

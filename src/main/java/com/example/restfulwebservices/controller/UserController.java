@@ -1,5 +1,6 @@
 package com.example.restfulwebservices.controller;
 
+import com.example.restfulwebservices.service.PostService;
 import com.example.restfulwebservices.service.UserService;
 import com.example.restfulwebservices.service.dto.PostDto;
 import com.example.restfulwebservices.service.dto.UserDto;
@@ -19,19 +20,22 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final PostService postService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          PostService postService) {
         this.userService = userService;
+        this.postService = postService;
     }
 
     @GetMapping("/users")
-    public List<UserDto> getUsers(){
+    public List<UserDto> getUsers() {
         return userService.findAll();
     }
 
     @GetMapping("/users/{id}")
-    public EntityModel<UserDto> getUser(@PathVariable(name = "id") Integer id){
+    public EntityModel<UserDto> getUser(@PathVariable(name = "id") Integer id) {
         var user = userService.findById(id);
         EntityModel<UserDto> entityModel = EntityModel.of(user);
         WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).getUsers());
@@ -41,12 +45,12 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUsers(@PathVariable(name = "id") Integer id){
+    public void deleteUsers(@PathVariable(name = "id") Integer id) {
         userService.deleteById(id);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto user){
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto user) {
         var userAdded = userService.add(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -58,11 +62,25 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/posts")
-    public List<PostDto> getPostForUser(@PathVariable(name = "id") Integer id){
+    public List<PostDto> getPostForUser(@PathVariable(name = "id") Integer id) {
         var user = userService.findById(id);
 
         return user.posts();
     }
 
+    @PostMapping("/users/{id}/posts")
+    public ResponseEntity<PostDto> addPostForUser(@PathVariable Integer id, @Valid @RequestBody PostDto postDto) {
+        var user = userService.findById(id);
 
+        postDto.setUser(user);
+
+        var savedPost = postService.add(postDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
 }
